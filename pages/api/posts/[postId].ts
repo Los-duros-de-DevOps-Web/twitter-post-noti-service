@@ -2,16 +2,19 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "@/libs/prismadb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== "GET") {
     return res.status(405).end();
   }
 
   try {
     const { postId } = req.query;
 
-    if (!postId || typeof postId !== 'string') {
-      throw new Error('Invalid ID');
+    if (!postId || typeof postId !== "string") {
+      throw new Error("Invalid ID");
     }
 
     const post = await prisma.post.findUnique({
@@ -22,11 +25,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         user: true,
         comments: {
           include: {
-            user: true
+            user: true,
           },
           orderBy: {
-            createdAt: 'desc'
-          }
+            createdAt: "desc",
+          },
         },
       },
     });

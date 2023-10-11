@@ -1,17 +1,20 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import prisma from '@/libs/prismadb';
+import prisma from "@/libs/prismadb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== "GET") {
     return res.status(405).end();
   }
 
   try {
     const { userId } = req.query;
 
-    if (!userId || typeof userId !== 'string') {
-      throw new Error('Invalid ID');
+    if (!userId || typeof userId !== "string") {
+      throw new Error("Invalid ID");
     }
 
     const notifications = await prisma.notification.findMany({
@@ -19,17 +22,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         userId,
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     });
 
     await prisma.user.update({
       where: {
-        id: userId
+        id: userId,
       },
       data: {
         hasNotification: false,
-      }
+      },
     });
 
     return res.status(200).json(notifications);

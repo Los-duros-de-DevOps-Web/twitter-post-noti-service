@@ -1,58 +1,64 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import serverAuth from "@/libs/serverAuth";
 import prisma from "@/libs/prismadb";
+import axios from "axios";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST' && req.method !== 'GET') {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method === "OPTIONS") return res.status(200).end();
+
+  if (req.method !== "POST" && req.method !== "GET") {
     return res.status(405).end();
   }
 
   try {
-    
-    if (req.method === 'POST') {
-      const { currentUser } = await serverAuth(req);
+    if (req.method === "POST") {
+      const data = await axios.get("http://localhost:3002/current");
+      const currentUser = data.data;
       const { body } = req.body;
 
       const post = await prisma.post.create({
         data: {
           body,
-          userId: currentUser.id
-        }
+          userId: currentUser.id,
+        },
       });
 
       return res.status(200).json(post);
     }
 
-    if (req.method === 'GET') {
+    if (req.method === "GET") {
       const { userId } = req.query;
 
-      console.log({ userId })
+      console.log({ userId });
+      console.log("Test");
 
       let posts;
 
-      if (userId && typeof userId === 'string') {
+      if (userId && typeof userId === "string") {
         posts = await prisma.post.findMany({
           where: {
-            userId
+            userId,
           },
           include: {
             user: true,
-            comments: true
+            comments: true,
           },
           orderBy: {
-            createdAt: 'desc'
+            createdAt: "desc",
           },
         });
       } else {
         posts = await prisma.post.findMany({
           include: {
             user: true,
-            comments: true
+            comments: true,
           },
           orderBy: {
-            createdAt: 'desc'
-          }
+            createdAt: "desc",
+          },
         });
       }
 
