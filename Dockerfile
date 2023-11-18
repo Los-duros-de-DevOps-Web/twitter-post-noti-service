@@ -30,3 +30,4 @@ COPY --from=builder /twitter-post-noti/package.json ./package.json
 
 EXPOSE 3004
 CMD ["yarn", "start"]
+
