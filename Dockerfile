@@ -23,7 +23,6 @@ ENV NODE_ENV production
 COPY --from=builder /twitter-post-noti/next.config.js ./
 
 # Copia de otros archivos necesarios
-COPY --from=builder /twitter-post-noti/public ./public
 COPY --from=builder /twitter-post-noti/.next ./.next
 COPY --from=builder /twitter-post-noti/node_modules ./node_modules
 COPY --from=builder /twitter-post-noti/package.json ./package.json
