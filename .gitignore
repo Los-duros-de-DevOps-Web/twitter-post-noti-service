@@ -7,7 +7,6 @@ dist/
 
 # Archivos generados
 package-lock.json
-yarn.lock
 
 # Configuración local (puede variar según tu editor)
 .vscode/
